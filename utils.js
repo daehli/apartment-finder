@@ -97,20 +97,7 @@ const findStations = geotag => {
     }
 }
 
-
-const query = async () => {
-        return new Promise((resolve,reject)=>{ 
-            kijiji.query(SETTINGS.BIG_APPARTEMENT_SEARCH.pref,SETTINGS.BIG_APPARTEMENT_SEARCH.params, async (err, ad) => {
-                if(err){
-                    reject(err)
-                }
-                resolve(ad)
-            })
-        })
-};
-
-
-module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest,query};
+module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest};
 
 
 // TODO Change Puts setting here 
