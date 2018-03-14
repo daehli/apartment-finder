@@ -32,6 +32,8 @@ npm migrations
 npm migrations_rollback
 ```
 
+
+### Slack 
 You need to create a Slack app to use the bots.
 
 Import your Slack-Token 
@@ -42,7 +44,7 @@ EXPORT SLACK_TOKEN=xoxp-XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX
 
 Add Some informations in the Settings File
 
-```json
+```plain
 
 {
 	"CHANNEL":"#YOUR_AMAZING_CHANNEL",
@@ -64,7 +66,7 @@ You can personalise your [Bots](https://github.com/mwpenny/kijiji-scraper#exampl
 
 - `prefs` : Contains Kijiji ad Search category and locations
 
-```json
+```plain
 {
     "locationId": <Kijiji location id>,
     "categoryId": <Kijiji ad category id>,
@@ -74,7 +76,7 @@ You can personalise your [Bots](https://github.com/mwpenny/kijiji-scraper#exampl
 
 - `params` : Contains Kijiji Side search to filter your ads you can pass has many argument you want.
 
-```json
+```plain
 {
 	"minPrice":400
 	"maxPrice":1800
