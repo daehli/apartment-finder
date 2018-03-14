@@ -26,6 +26,4 @@ const query = async () => {
 };
 
 
-
-
 module.exports = { insert , query };
