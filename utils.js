@@ -1,8 +1,6 @@
 const Promise = require('bluebird')
-const kijiji = require("kijiji-scraper")
-const SETTINGS = require('./settings')
 const { WebClient } = require('@slack/client');
-
+const SETTINGS = require('./settings')
 const web = new WebClient(process.env.SLACK_TOKEN)
 
 
@@ -34,13 +32,6 @@ const coordDistance = (coord1,coord2)=>{
 }
 
 const inBox = (coords,box)=> {
-    // Coords = 45.523808,-73.584556
-    // Of the box 45.548161, -73.609838
-    // Box = [45.522499, -73.591313],[45.527092, -73.564397]
-     // 45.522499 < 45.523808 && 45.523808 < 45.527092
-     // -73.564397 >= -73.584556 && -73.584556 >= -73.591313
-     // -73.564397 > -73.584556 > -73.591313
-    // Check latitude first after longitude 
     if (box[0][0] <= coords[0] && coords[0] <= box[1][0] && box[1][1] >= coords[1] && coords[1] >= box[0][1]){
         return true
     }
@@ -50,16 +41,12 @@ const inBox = (coords,box)=> {
 
 const PostListingToSlack = (listing)=> {
     listing.map(async x=>{
-        // Register This 
-        // console.log(x['geo:lat'])
-        // console.log(x['geo:long'])
-        // console.log(x['g-core:price'])
+    const neighborhood = x['neighborhood'].length != 0 ? x['neighborhood'].map(x=>x.name).join(" | ") : x['stations'].map(x=>x.name).join(" | ")
+    const stations = x['stations'].length != 0 ? x['stations'].map(x=>`${x.name} -  ${x.distance} ㎞`).join(" | ") : x['neighborhood'].map(x=>x.name).join(" | ")
 
-    const neighborhood = x['neighborhood']['found'] ? x['neighborhood']['name']: x['stations']['name']
-    const stations = x['stations']['found'] ? x['stations']['name']: x['neighborhood']['name']
-    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} | 🚋 ${stations} | 🌳 ${neighborhood}  | 🔗 <${x['link']}>`
+    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t🚋 ${stations} \n Quartier : \n \t 🌳 ${neighborhood} \n🔗 <${x['link']}>`
 
-    web.chat.postMessage({ channel: '#général',username: "Corgi", icon_emoji:":robot_face:",text:desc })
+    web.chat.postMessage({ channel: SETTINGS.CHANNEL , username: SETTINGS.USERNAME, icon_emoji:":robot_face:", text:desc, unfurl_links: true, unfurl_media: true })
     })
 }
 
@@ -67,71 +54,43 @@ const findPointOfInterest =  async geotag => {
 
     return await new Promise((resolve,reject)=>{
         // Check neighborhood 
-        let neighborhood = findNeighborhood(geotag)
-
+        let neighborhood = findNeighborhood(geotag).filter(x=>x.found)
         // Check subways Stations 
-        let stations = findStations(geotag)
+        let stations = findStations(geotag).filter(x=>x.found)
         resolve(Object.assign({neighborhood},{stations}))
     })
 }
 
 const findNeighborhood = geotag => {
+    // Return a list of Neighborhood
+
+    let arrNeighborhood = []
     for (const props in SETTINGS.BOXES){
         let neighborhood = SETTINGS.BOXES[props]
         if (inBox(geotag, neighborhood)){
-            return Object.assign({},{found:true,name:props})
+            arrNeighborhood.push(Object.assign({},{found:true,name:props}))
         }
-        return Object.assign({},{found:false})
+        arrNeighborhood.push(Object.assign({},{found:false}))
     }
+
+    return arrNeighborhood
 }
 
 const findStations = geotag => {
+    let arrStations = []
     for (const props in SETTINGS.STATIONS){
         const station = SETTINGS.STATIONS[props]
         const stationName = `STATIONS.${props}`
         let dist = coordDistance(station,geotag)
         if(0 < dist && dist <= SETTINGS.MAX_TRANSIT_DIST){
-            return Object.assign({},{found:true,name:props,distance:dist})
+            arrStations.push(Object.assign({},{found:true,name:props,distance:dist}))
         }
-        return Object.assign({},{found:false})
+        arrStations.push(Object.assign({},{found:false}))
     }
+
+    return arrStations
 }
 
 module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest};
 
 
-// TODO Change Puts setting here 
-
-// Kijiji Parameters
-//  Prefs Objets 
-// {
-//     "locationId": <Kijiji location id>,
-//     "categoryId": <Kijiji ad category id>,
-//     "scrapeInnerAd": true/false (default true)
-//      c216l1700281 Big appartement In Montreal
-// }
-
-
-// Params Object
-
-// minPrice=400
-// maxPrice=1800
-// locationId=1700281
-// categoryId=216
-// keywords=petit+italie
-// searchView=LIST
-// urgentOnly=false
-// cpoOnly=false
-// carproofOnly=false
-// highlightOnly=false
-// gpTopAd=false
-// sortByName=dateDesc
-// adType=OFFER
-// adPriceType=
-// videoOnly=false
-// hasImages=false
-// formSubmit=true
-// attributeMap%5BadType%5D=%5BOFFER%5D
-// attributeMap%5Bnumberbathrooms_s%5D=%5B20%5D
-// address=H2S
-// radius=2.0

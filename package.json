@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts" : {
+    "migrations" : "./node_modules/.bin/knex migrate:latest",
+    "migrations_rollback": "./node_modules/.bin/knex migrate:rollback"
+  },
   "dependencies": {
     "@slack/client": "^4.0.0",
     "bluebird": "^3.5.1",
