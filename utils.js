@@ -1,8 +1,10 @@
 const Promise = require('bluebird')
 const { WebClient } = require('@slack/client');
+const rp = require('request-promise')
 const SETTINGS = require('./settings')
 const web = new WebClient(process.env.SLACK_TOKEN)
-
+const moment = require('moment')
+const _  = require('lodash')
 
 if(typeof(Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function () {
@@ -43,11 +45,24 @@ const PostListingToSlack = (listing)=> {
     listing.map(async x=>{
     const neighborhood = x['neighborhood'].length != 0 ? x['neighborhood'].map(x=>x.name).join(" | ") : x['stations'].map(x=>x.name).join(" | ")
     const stations = x['stations'].length != 0 ? x['stations'].map(x=>`${x.name} -  ${x.distance} ㎞`).join(" | ") : x['neighborhood'].map(x=>x.name).join(" | ")
-
-    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t🚋 ${stations} \n Quartier : \n \t 🌳 ${neighborhood} \n🔗 <${x['link']}>`
-
+    const commuting = buildCommutingString(x['commuting'])
+    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t \t🚋 ${stations} \n Quartier : \n \t \t 🌳 ${neighborhood} \n Transit : \t \t ${commuting} \n 🔗 <${x['link']}>`
     web.chat.postMessage({ channel: SETTINGS.CHANNEL , username: SETTINGS.USERNAME, icon_emoji:":robot_face:", text:desc, unfurl_links: true, unfurl_media: true })
     })
+}
+
+const buildCommutingString = (obj) => {
+
+    let str = []
+    if(obj.length != 0){
+        obj.map(x=>{
+            if(x['transport'] == 'bicycling'){
+                return `🚲 - duration : ${x.duration} to ${x.commuting} 🔥`
+            } else {
+                return `🚍 - duration : ${x.duration} to ${x.commuting} ☮️ `
+            }
+        }).join(" | ")
+    }
 }
 
 const findPointOfInterest =  async geotag => {
@@ -91,6 +106,59 @@ const findStations = geotag => {
     return arrStations
 }
 
-module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest};
+const isMoreThanMaxTransitTime = async (geotag,transport)=> {
+
+    let arrCommutingPlace = []
+
+    for(const props in SETTINGS.COMMUTING_PLACE){
+        // Promise on loop with google maps 
+        null
+    }
+    let options = {
+        uri:'https://maps.googleapis.com/maps/api/directions/json',
+        qs: {
+            'origin':commutingPlace,
+        }
+    }
+    rq('https://maps.googleapis.com/maps/api/directions/')
+}
+
+
+
+// curl https://maps.googleapis.com/maps/api/directions/json\?origin\=45.503640,-73.620574\&destination\=45.543068,-73.5892684\&mode\=transit\&key\=AIzaSyCUaFnuIP9XbsHnr2EnkPa56O7jLZEIDIA
+
+// bicycling, driving, walking, transit
+const transitTime = async (geotag,transports = ['bike']) => {
+    return await new Promise(async (resolve,reject)=>{
+        let arrCommutingTime = []
+        let tomorrowAt8Am = moment().add(1,'days').hours(8).minutes(0).unix()
+        for (const props in SETTINGS.COMMUTING_PLACE){
+            const commutingPlace = SETTINGS.COMMUTING_PLACE[props]
+            const commutingNamePlace = `${props}`
+            for(const transport in transports){
+                const transportName = transports[transport]
+                let options = {
+                    uri:'https://maps.googleapis.com/maps/api/directions/json',
+                    qs: {
+                        'origin':_.map(commutingPlace,x => {return x}).join(','),
+                        'destination':_.map(geotag,x => {return x}).join(','),
+                        'mode': transportName,
+                        'departure_time': tomorrowAt8Am,
+                        'key': process.env.GOOGLE_KEYS_API
+                    }
+                }
+                await rp(options).then(data=>{
+                    const json = JSON.parse(data)
+                    let obj = Object.assign({},{'transport':transportName,'duration':json['routes'][0]['legs'][0]['duration']['text'],'commuting':commutingNamePlace})
+                    arrCommutingTime.push(obj)
+                }).catch(err=>{
+                    reject(`WTF ${err}`)
+                })
+            }
+        }
+        resolve(arrCommutingTime)
+    })
+}
+module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest,transitTime,isMoreThanMaxTransitTime};
 
 
