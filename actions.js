@@ -5,8 +5,7 @@ const kijiji = require("kijiji-scraper")
 const SETTINGS = require('./settings')
 
 const insert = async data => {
-	return await new Promise((resolve,reject)=>{
-        console.log(JSON.stringify(data))
+	return new Promise((resolve,reject)=>{
 		knex('Listing').insert({"kv":JSON.stringify(data)}).then(data=>{
 			resolve(true)
 		}).catch(err =>{
@@ -25,6 +24,5 @@ const query = async () => {
             })
         })
 };
-
 
 module.exports = { insert , query };

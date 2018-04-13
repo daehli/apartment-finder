@@ -54,7 +54,7 @@ const PostListingToSlack = (listing)=> {
 const buildCommutingString = (obj) => {
     if(obj.length != 0){
         return obj.map(x=>{
-            if(x['transport'] == 'bike'){
+            if(x['transport'] == 'bicycling'){
                 return `\t \t🚲 - duration : ${x.duration} to ${x.commuting}`
             } else {
                 return `\t \t🚍 - duration : ${x.duration} to ${x.commuting}`
@@ -126,7 +126,7 @@ const isMoreThanMaxTransitTime = async (geotag,transport)=> {
 // curl https://maps.googleapis.com/maps/api/directions/json\?origin\=45.503640,-73.620574\&destination\=45.543068,-73.5892684\&mode\=transit\&key\=AIzaSyCUaFnuIP9XbsHnr2EnkPa56O7jLZEIDIA
 
 // bicycling, driving, walking, transit
-const transitTime = async (geotag,transports = ['bike','transit']) => {
+const transitTime = async (geotag,transports = ['bicycling','transit']) => {
     return await new Promise(async (resolve,reject)=>{
         let arrCommutingTime = []
         let tomorrowAt8Am = moment().add(1,'days').hours(8).minutes(0).unix()
