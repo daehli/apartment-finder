@@ -37,7 +37,16 @@
 		"Place Saint-Henry":[45.476916, -73.586306]
 	},
 
-	"MAX_TRANSIT_DIST":2,
+	"MAX_TRANSIT_DIST":1.5,
+
+	"LOCALIZATION":"America/Montreal",
+
+	"MAX_TRANSIT_TIME":35,
+
+	"COMMUTING_PLACE": {
+		"HEC": [45.503794, -73.619942],
+		"ALAYACARE":[45.518143, -73.582013]
+	},
 
 	"BIG_APPARTEMENT_SEARCH":{
 		"pref": {
@@ -54,7 +63,7 @@
 		}
 	},
 
-	"CHANNEL":"#housing",
+	"CHANNEL":"#aléatoire",
 
 	"USERNAME": "Corgi"
 }

@@ -5,7 +5,8 @@ const kijiji = require("kijiji-scraper")
 const SETTINGS = require('./settings')
 
 const insert = async data => {
-	return new Promise((resolve,reject)=>{
+	return await new Promise((resolve,reject)=>{
+        console.log(JSON.stringify(data))
 		knex('Listing').insert({"kv":JSON.stringify(data)}).then(data=>{
 			resolve(true)
 		}).catch(err =>{

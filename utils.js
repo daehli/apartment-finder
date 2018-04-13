@@ -45,23 +45,21 @@ const PostListingToSlack = (listing)=> {
     listing.map(async x=>{
     const neighborhood = x['neighborhood'].length != 0 ? x['neighborhood'].map(x=>x.name).join(" | ") : x['stations'].map(x=>x.name).join(" | ")
     const stations = x['stations'].length != 0 ? x['stations'].map(x=>`${x.name} -  ${x.distance} ㎞`).join(" | ") : x['neighborhood'].map(x=>x.name).join(" | ")
-    const commuting = buildCommutingString(x['commuting'])
-    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t \t🚋 ${stations} \n Quartier : \n \t \t 🌳 ${neighborhood} \n Transit : \t \t ${commuting} \n 🔗 <${x['link']}>`
+    const commuting = buildCommutingString(_.get(x,'commuting',[])) ? buildCommutingString(_.get(x,'commuting',[])) : 'No commuting'
+    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t \t🚋 ${stations} \n Quartier : \n \t \t 🌳 ${neighborhood} \n Transit : \n ${commuting} \n 🔗 <${x['link']}>`
     web.chat.postMessage({ channel: SETTINGS.CHANNEL , username: SETTINGS.USERNAME, icon_emoji:":robot_face:", text:desc, unfurl_links: true, unfurl_media: true })
     })
 }
 
 const buildCommutingString = (obj) => {
-
-    let str = []
     if(obj.length != 0){
-        obj.map(x=>{
-            if(x['transport'] == 'bicycling'){
-                return `🚲 - duration : ${x.duration} to ${x.commuting} 🔥`
+        return obj.map(x=>{
+            if(x['transport'] == 'bike'){
+                return `\t \t🚲 - duration : ${x.duration} to ${x.commuting}`
             } else {
-                return `🚍 - duration : ${x.duration} to ${x.commuting} ☮️ `
+                return `\t \t🚍 - duration : ${x.duration} to ${x.commuting}`
             }
-        }).join(" | ")
+        }).join("\n")
     }
 }
 
@@ -128,7 +126,7 @@ const isMoreThanMaxTransitTime = async (geotag,transport)=> {
 // curl https://maps.googleapis.com/maps/api/directions/json\?origin\=45.503640,-73.620574\&destination\=45.543068,-73.5892684\&mode\=transit\&key\=AIzaSyCUaFnuIP9XbsHnr2EnkPa56O7jLZEIDIA
 
 // bicycling, driving, walking, transit
-const transitTime = async (geotag,transports = ['bike']) => {
+const transitTime = async (geotag,transports = ['bike','transit']) => {
     return await new Promise(async (resolve,reject)=>{
         let arrCommutingTime = []
         let tomorrowAt8Am = moment().add(1,'days').hours(8).minutes(0).unix()
@@ -159,6 +157,6 @@ const transitTime = async (geotag,transports = ['bike']) => {
         resolve(arrCommutingTime)
     })
 }
-module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest,transitTime,isMoreThanMaxTransitTime};
+module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest, transitTime, isMoreThanMaxTransitTime};
 
 

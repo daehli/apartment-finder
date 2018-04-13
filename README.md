@@ -45,12 +45,10 @@ EXPORT SLACK_TOKEN=xoxp-XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX
 Add Some informations in the Settings File
 
 ```plain
-
 {
 	"CHANNEL":"#YOUR_AMAZING_CHANNEL",
 	"USERNAME":"BOTS_USERNAME
 }
-
 ``` 
 
 
@@ -117,3 +115,8 @@ You can personalise your [Bots](https://github.com/mwpenny/kijiji-scraper#exampl
 A picture worth a thousand words
 
 ![](https://screenshotscdn.firefoxusercontent.com/images/7a045083-677a-44b7-9637-5839e9abc19b.jpg)
+
+
+<!-- TODO Make the craiglist Scrapper 
+	https://montreal.craigslist.ca/search/apa?format=rss
+ -->
