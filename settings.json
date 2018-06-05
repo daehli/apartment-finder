@@ -1,70 +1,21 @@
 {
-	"BOXES":{
-
-		"Mile-End": [
-			[45.521373, -73.614138],
-			[45.521373, -73.614138]
-		],
-
-		"Mile-Ex":[
-			[45.528638, -73.623276],
-			[45.532593, -73.601868]
-		],
-		"Little-Italie":[
-			[45.534817, -73.618562],
-			[45.540708, -73.591354]
-		],
-
-		"Plateau":[
-			[45.522499, -73.591313],	
-			[45.527092, -73.564397]		
-		],
-
-		"Saint-Henry":[
-			[45.471863, -73.593543],
-			[45.482635, -73.571184]
-		]
-	},
-
-	"STATIONS":{
-		"Jean-Talon":[45.539287, -73.613702],
-		"Beaubien":[45.535441, -73.604641],
-		"Rosemount":[45.531023, -73.598052],
-		"Laurier":[45.527536, -73.589176],
-		"Mont-Royal":[45.524679, -73.581194],
-		"Castelneau":[45.535222, -73.620370],
-		"Lionel-groux":[45.482667, -73.580478],
-		"Place Saint-Henry":[45.476916, -73.586306]
-	},
-
-	"MAX_TRANSIT_DIST":1.5,
-
-	"LOCALIZATION":"America/Montreal",
-
-	"MAX_TRANSIT_TIME":35,
-
-	"COMMUTING_PLACE": {
-		"HEC": [45.503794, -73.619942],
-		"ALAYACARE":[45.518143, -73.582013],
-		"Universite Sherbrooke":[45.525197, -73.520336]
-	},
-
-	"BIG_APPARTEMENT_SEARCH":{
+	
+	"LOOKING_FOR_KIJIJI":{
 		"pref": {
 			"locationId":1700281,
-			"categoryId":37,
+			"categoryId":648,
 			"scrapeInnerAd":false
 
 		},
 		"params": {
-			"minPrice":600,
-			"maxPrice":1800,
+			"minPrice":20,
+			"maxPrice":500,
 			"keywords":"",
 			"adType":"OFFER"
 		}
 	},
 
-	"CHANNEL":"#housing",
+	"CHANNEL":"#road-bikes",
 
 	"USERNAME": "Corgi"
 }

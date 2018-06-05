@@ -14,9 +14,9 @@ const insert = async data => {
 	})
 }
 
-const query = async () => {
+const query = async (pref_obj,params_obj) => {
         return new Promise((resolve,reject)=>{ 
-            kijiji.query(SETTINGS.BIG_APPARTEMENT_SEARCH.pref,SETTINGS.BIG_APPARTEMENT_SEARCH.params, async (err, ad) => {
+            kijiji.query(pref_obj,params_obj, async (err, ad) => {
                 if(err){
                     reject(err)
                 }

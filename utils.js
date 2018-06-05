@@ -43,10 +43,7 @@ const inBox = (coords,box)=> {
 
 const PostListingToSlack = (listing)=> {
     listing.map(async x=>{
-    const neighborhood = x['neighborhood'].length != 0 ? x['neighborhood'].map(x=>x.name).join(" | ") : x['stations'].map(x=>x.name).join(" | ")
-    const stations = x['stations'].length != 0 ? x['stations'].map(x=>`${x.name} -  ${x.distance} ㎞`).join(" | ") : x['neighborhood'].map(x=>x.name).join(" | ")
-    const commuting = buildCommutingString(_.get(x,'commuting',[])) ? buildCommutingString(_.get(x,'commuting',[])) : 'No commuting'
-    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n Metro : \n \t \t🚋 ${stations} \n Quartier : \n \t \t 🌳 ${neighborhood} \n Transit : \n ${commuting} \n 🔗 <${x['link']}>`
+    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n 🔗 <${x['link']}>`
     web.chat.postMessage({ channel: SETTINGS.CHANNEL , username: SETTINGS.USERNAME, icon_emoji:":robot_face:", text:desc, unfurl_links: true, unfurl_media: true })
     })
 }
@@ -123,7 +120,6 @@ const isMoreThanMaxTransitTime = async (geotag,transport)=> {
 
 
 
-// curl https://maps.googleapis.com/maps/api/directions/json\?origin\=45.503640,-73.620574\&destination\=45.543068,-73.5892684\&mode\=transit\&key\=AIzaSyCUaFnuIP9XbsHnr2EnkPa56O7jLZEIDIA
 
 // bicycling, driving, walking, transit
 const transitTime = async (geotag,transports = ['bicycling','transit']) => {
