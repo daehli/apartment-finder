@@ -29,7 +29,13 @@ let params_obj = {
 	"radius":null,
 }
 
+let simpleKeysValueObj = {
+	"g-core:price":null,
+	"geo:lat":null,
+	"geo:long":null,
+}
 
 
 
-module.exports = {prefs_obj,params_obj}
+
+module.exports = {prefs_obj,params_obj,simpleKeysValueObj}

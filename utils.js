@@ -1,8 +1,6 @@
 const Promise = require('bluebird')
-const { WebClient } = require('@slack/client');
 const rp = require('request-promise')
 const SETTINGS = require('./settings')
-const web = new WebClient(process.env.SLACK_TOKEN)
 const moment = require('moment')
 const _  = require('lodash')
 
@@ -40,13 +38,6 @@ const inBox = (coords,box)=> {
     return false
 }
 
-
-const PostListingToSlack = (listing)=> {
-    listing.map(async x=>{
-    desc = `🍩 ${x['title']}  | 💰${x['g-core:price']} \n 🔗 <${x['link']}>`
-    web.chat.postMessage({ channel: SETTINGS.CHANNEL , username: SETTINGS.USERNAME, icon_emoji:":robot_face:", text:desc, unfurl_links: true, unfurl_media: true })
-    })
-}
 
 const buildCommutingString = (obj) => {
     if(obj.length != 0){
@@ -153,6 +144,6 @@ const transitTime = async (geotag,transports = ['bicycling','transit']) => {
         resolve(arrCommutingTime)
     })
 }
-module.exports = { coordDistance, inBox , PostListingToSlack,findPointOfInterest, transitTime, isMoreThanMaxTransitTime};
+module.exports = { coordDistance, inBox ,findPointOfInterest, transitTime, isMoreThanMaxTransitTime};
 
 
