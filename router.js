@@ -21,7 +21,7 @@ router.get('/:channel/kijiji', async(req,resp)=>{
 		let collection = await previousPromise;
 		let kv = pick(item,Object.keys(simpleKeysValueObj))
 		const isNotDuplicated = await insert(item).catch((resolve => resolve))
-		if (isNotDuplicated){
+		if (isNotDuplicated === true){
 			collection.push(item);
 		}
 		return collection

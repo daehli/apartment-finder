@@ -1,6 +1,6 @@
 const Promise = require('bluebird')
 const db = require('./knexfile')
-const knex = require('knex')(process.env.PRODUCTION ? db['production'] : db['development'] )
+const knex = require('knex')(db[process.env.NODE_ENV])
 const slack = require('./slack')
 const kijiji = require("kijiji-scraper")
 const SETTINGS = require('./settings')
@@ -9,8 +9,8 @@ const insert = async data => {
 	return new Promise((resolve,reject)=>{
 		knex('Listing').insert({"kv":JSON.stringify(data)}).then(data=>{
 			resolve(true)
-		}).catch(err =>{
-			reject(false)
+		}).catch((err) =>{
+			reject(err)
 		})
 	})
 }
