@@ -8,7 +8,8 @@
     "migrations": "./node_modules/.bin/knex migrate:latest",
     "migrations_rollback": "./node_modules/.bin/knex migrate:rollback",
     "test": "NODE_ENV=test mocha --reporter list",
-    "debugger": "NODE_ENV=development node inspect index.js"
+    "debugger": "NODE_ENV=development node inspect index.js",
+    "debugger:chrome": "NODE_ENV=development node --inspect-brk index.js"
   },
   "dependencies": {
     "@slack/client": "^4.0.0",

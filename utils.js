@@ -157,4 +157,19 @@ const transitTime = async (geotag, transports = ['bicycling', 'transit']) => {
         resolve(arrCommutingTime)
     })
 }
-module.exports = { coordDistance, inBox, findPointOfInterest, transitTime, isMoreThanMaxTransitTime }
+
+const isPointOfInterestIsPresent = item => {
+    /*
+        Check if the items has a neighborhood or stations
+    */
+
+    return item['neighborhood'].length != 0 || item['stations'].length != 0
+}
+module.exports = {
+    coordDistance,
+    inBox,
+    findPointOfInterest,
+    transitTime,
+    isMoreThanMaxTransitTime,
+    isPointOfInterestIsPresent
+}
