@@ -18,7 +18,7 @@ router.get('/:channel/kijiji', async (req, resp) => {
 	let data = await kijijiQuery.reduce(async (previousPromise, item) => {
 		let collection = await previousPromise
 		let kv = pick(item, Object.keys(simpleKeysValueObj))
-		const isNotDuplicated = await insert(item).catch(resolve => resolve)
+		const isNotDuplicated = await insert(kv).catch(resolve => resolve)
 		if (isNotDuplicated === true) {
 			collection.push(item)
 		}
