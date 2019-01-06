@@ -1,26 +1,30 @@
 // Update with your config settings.
 
 module.exports = {
-
   development: {
-    client: 'sqlite3',
+    client: 'mysql',
     connection: {
-      filename: './dev.sqlite3'
+      database: 'test',
+      user: 'root',
+      password: 'example',
+      host: 'db'
     }
   },
 
   test: {
-    client: 'sqlite3',
+    client: 'mysql',
     connection: {
-      filename: './test.sqlite3'
-    },
+      database: 'db',
+      user: 'root',
+      password: 'example'
+    }
   },
 
   staging: {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
+      user: 'username',
       password: 'password'
     },
     pool: {
@@ -36,7 +40,7 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
+      user: 'username',
       password: 'password'
     },
     pool: {
@@ -47,4 +51,4 @@ module.exports = {
       tableName: 'knex_migrations'
     }
   }
-};
+}
