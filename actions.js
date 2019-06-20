@@ -7,7 +7,7 @@ const SETTINGS = require('./settings')
 
 const insert = async data => {
     return new Promise((resolve, reject) => {
-        knex('Listing')
+        knex('tbl_listing')
             .insert({ kv: JSON.stringify(data) })
             .then(data => {
                 resolve(true)

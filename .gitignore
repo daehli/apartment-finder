@@ -1,3 +1,5 @@
 /dev.sqlite3
 loop.sh
 node_modules/
+.env.app
+.env.db

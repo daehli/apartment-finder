@@ -1,24 +1,17 @@
 version: "3"
 
-networks:
-  kijiji-network:
-    driver: "bridge"
-
 services:
+  db:
+    image: postgres:11.2
+    env_file:
+      - .env.db
   app:
     build:
       context: .
     ports:
-      - "4001:4000"
+      - "4000:4000"
+      - "9229:9229"
     volumes: 
       - "${PWD}:/usr/src/app"
-    networks:
-      - kijiji-network
-  db:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-    networks:
-      - kijiji-network
+    env_file: 
+      - .env.app

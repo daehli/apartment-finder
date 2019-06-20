@@ -56,5 +56,7 @@ router.get('/:channel/settings/kijiji', async (req, resp) => {
 module.exports = router
 
 // curl 'localhost:4001/api/road-bikes/kijiji?locationId=1700281&categoryId=648&maxPrice=500'
+// curl 'app.kijijifinder.docker:4000/api/road-bikes/kijiji?locationId=1700281&categoryId=648&maxPrice=500'
 // curl 'localhost:4001/api/bike-fixies/kijiji?locationId=1700281&categoryId=15096002&maxPrice=500'
 // curl 'localhost:4001/api/housing/settings/kijiji?locationId=1700281&categoryId=37&maxPrice=1000'
+

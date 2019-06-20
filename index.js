@@ -10,6 +10,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api', notifications)
 
-console.log('Listening on port', 4001)
+console.log('Listening on port', 4000)
 
-app.listen(4001)
+app.listen(4000)
