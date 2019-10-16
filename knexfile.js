@@ -1,26 +1,22 @@
 // Update with your config settings.
 
 module.exports = {
-
   development: {
-    client: 'sqlite3',
+    client: 'pg',
+    version: '11.2',
     connection: {
-      filename: './dev.sqlite3'
+      database: process.env.POSTGRES_DB,
+      port: process.env.POSTGRES_PORT,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      host: process.env.POSTGRES_HOST
     }
   },
-
-  test: {
-    client: 'sqlite3',
-    connection: {
-      filename: './test.sqlite3'
-    },
-  },
-
   staging: {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
+      user: 'username',
       password: 'password'
     },
     pool: {
@@ -33,18 +29,18 @@ module.exports = {
   },
 
   production: {
-    client: 'postgresql',
+    client: 'pg',
+    version: '11.2',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: process.env.POSTGRES_DB,
+      port: process.env.POSTGRES_PORT,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      host: process.env.POSTGRES_HOST
     },
     pool: {
       min: 2,
       max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
     }
   }
-};
+}

@@ -2,63 +2,63 @@ const Promise = require('bluebird')
 const rp = require('request-promise')
 const SETTINGS = require('./settings')
 const moment = require('moment')
-const _  = require('lodash')
+const _ = require('lodash')
 
-if(typeof(Number.prototype.toRad) === "undefined") {
-    Number.prototype.toRad = function () {
-        return this * Math.PI / 180;
+if (typeof Number.prototype.toRad === 'undefined') {
+    Number.prototype.toRad = function() {
+        return this * Math.PI / 180
     }
 }
 
-const coordDistance = (coord1,coord2)=>{
-
-    const decimals = 2;
-    var earthRadius = 6371; // km
+const coordDistance = (coord1, coord2) => {
+    const decimals = 2
+    var earthRadius = 6371 // km
     lat1 = parseFloat(coord1[0])
     lat2 = parseFloat(coord2[0])
     lon1 = parseFloat(coord1[1])
     lon2 = parseFloat(coord2[1])
 
-    var dLat = (lat2 - lat1).toRad();
-    var dLon = (lon2 - lon1).toRad();
-    var lat1 = lat1.toRad();
-    var lat2 = lat2.toRad();
+    var dLat = (lat2 - lat1).toRad()
+    var dLon = (lon2 - lon1).toRad()
+    var lat1 = lat1.toRad()
+    var lat2 = lat2.toRad()
 
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = earthRadius * c;
-    return Math.round(d * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    var d = earthRadius * c
+    return Math.round(d * Math.pow(10, decimals)) / Math.pow(10, decimals)
 }
 
-const inBox = (coords,box)=> {
-    if (box[0][0] <= coords[0] && coords[0] <= box[1][0] && box[1][1] >= coords[1] && coords[1] >= box[0][1]){
+const inBox = (coords, box) => {
+    if (box[0][0] <= coords[0] && coords[0] <= box[1][0] && box[1][1] >= coords[1] && coords[1] >= box[0][1]) {
         return true
     }
     return false
 }
 
-
-const buildCommutingString = (obj) => {
-    if(obj.length != 0){
-        return obj.map(x=>{
-            if(x['transport'] == 'bicycling'){
-                return `\t \t🚲 - duration : ${x.duration} to ${x.commuting}`
-            } else {
-                return `\t \t🚍 - duration : ${x.duration} to ${x.commuting}`
-            }
-        }).join("\n")
+const buildCommutingString = obj => {
+    if (obj.length != 0) {
+        return obj
+            .map(x => {
+                if (x['transport'] == 'bicycling') {
+                    return `\t \t🚲 - duration : ${x.duration} to ${x.commuting}`
+                } else {
+                    return `\t \t🚍 - duration : ${x.duration} to ${x.commuting}`
+                }
+            })
+            .join('\n')
     }
 }
 
-const findPointOfInterest =  async geotag => {
-
-    return await new Promise((resolve,reject)=>{
-        // Check neighborhood 
-        let neighborhood = findNeighborhood(geotag).filter(x=>x.found)
-        // Check subways Stations 
-        let stations = findStations(geotag).filter(x=>x.found)
-        resolve(Object.assign({neighborhood},{stations}))
+const findPointOfInterest = async geotag => {
+    return await new Promise((resolve, reject) => {
+        // Check neighborhood
+        let neighborhood = findNeighborhood(geotag).filter(x => x.found)
+        // Check subways Stations
+        let stations = findStations(geotag).filter(x => x.found)
+        resolve(Object.assign({ neighborhood }, { stations }))
     })
 }
 
@@ -66,12 +66,12 @@ const findNeighborhood = geotag => {
     // Return a list of Neighborhood
 
     let arrNeighborhood = []
-    for (const props in SETTINGS.BOXES){
+    for (const props in SETTINGS.BOXES) {
         let neighborhood = SETTINGS.BOXES[props]
-        if (inBox(geotag, neighborhood)){
-            arrNeighborhood.push(Object.assign({},{found:true,name:props}))
+        if (inBox(geotag, neighborhood)) {
+            arrNeighborhood.push(Object.assign({}, { found: true, name: props }))
         }
-        arrNeighborhood.push(Object.assign({},{found:false}))
+        arrNeighborhood.push(Object.assign({}, { found: false }))
     }
 
     return arrNeighborhood
@@ -79,71 +79,97 @@ const findNeighborhood = geotag => {
 
 const findStations = geotag => {
     let arrStations = []
-    for (const props in SETTINGS.STATIONS){
+    for (const props in SETTINGS.STATIONS) {
         const station = SETTINGS.STATIONS[props]
         const stationName = `STATIONS.${props}`
-        let dist = coordDistance(station,geotag)
-        if(0 < dist && dist <= SETTINGS.MAX_TRANSIT_DIST){
-            arrStations.push(Object.assign({},{found:true,name:props,distance:dist}))
+        let dist = coordDistance(station, geotag)
+        if (0 < dist && dist <= SETTINGS.MAX_TRANSIT_DIST) {
+            arrStations.push(Object.assign({}, { found: true, name: props, distance: dist }))
         }
-        arrStations.push(Object.assign({},{found:false}))
+        arrStations.push(Object.assign({}, { found: false }))
     }
 
     return arrStations
 }
 
-const isMoreThanMaxTransitTime = async (geotag,transport)=> {
-
+const isMoreThanMaxTransitTime = async (geotag, transport) => {
     let arrCommutingPlace = []
 
-    for(const props in SETTINGS.COMMUTING_PLACE){
-        // Promise on loop with google maps 
+    for (const props in SETTINGS.COMMUTING_PLACE) {
+        // Promise on loop with google maps
         null
     }
     let options = {
-        uri:'https://maps.googleapis.com/maps/api/directions/json',
+        uri: 'https://maps.googleapis.com/maps/api/directions/json',
         qs: {
-            'origin':commutingPlace,
+            origin: commutingPlace
         }
     }
     rq('https://maps.googleapis.com/maps/api/directions/')
 }
 
-
-
-
 // bicycling, driving, walking, transit
-const transitTime = async (geotag,transports = ['bicycling','transit']) => {
-    return await new Promise(async (resolve,reject)=>{
+const transitTime = async (geotag, transports = ['bicycling', 'transit']) => {
+    return await new Promise(async (resolve, reject) => {
         let arrCommutingTime = []
-        let tomorrowAt8Am = moment().add(1,'days').hours(8).minutes(0).unix()
-        for (const props in SETTINGS.COMMUTING_PLACE){
+        let tomorrowAt8Am = moment()
+            .add(1, 'days')
+            .hours(8)
+            .minutes(0)
+            .unix()
+        for (const props in SETTINGS.COMMUTING_PLACE) {
             const commutingPlace = SETTINGS.COMMUTING_PLACE[props]
             const commutingNamePlace = `${props}`
-            for(const transport in transports){
+            for (const transport in transports) {
                 const transportName = transports[transport]
                 let options = {
-                    uri:'https://maps.googleapis.com/maps/api/directions/json',
+                    uri: 'https://maps.googleapis.com/maps/api/directions/json',
                     qs: {
-                        'origin':_.map(commutingPlace,x => {return x}).join(','),
-                        'destination':_.map(geotag,x => {return x}).join(','),
-                        'mode': transportName,
-                        'departure_time': tomorrowAt8Am,
-                        'key': process.env.GOOGLE_KEYS_API
+                        origin: _.map(commutingPlace, x => {
+                            return x
+                        }).join(','),
+                        destination: _.map(geotag, x => {
+                            return x
+                        }).join(','),
+                        mode: transportName,
+                        departure_time: tomorrowAt8Am,
+                        key: process.env.GOOGLE_KEYS_API
                     }
                 }
-                await rp(options).then(data=>{
-                    const json = JSON.parse(data)
-                    let obj = Object.assign({},{'transport':transportName,'duration':json['routes'][0]['legs'][0]['duration']['text'],'commuting':commutingNamePlace})
-                    arrCommutingTime.push(obj)
-                }).catch(err=>{
-                    reject(`WTF ${err}`)
-                })
+                await rp(options)
+                    .then(data => {
+                        const json = JSON.parse(data)
+                        let obj = Object.assign(
+                            {},
+                            {
+                                transport: transportName,
+                                duration: json['routes'][0]['legs'][0]['duration']['text'],
+                                commuting: commutingNamePlace
+                            }
+                        )
+                        arrCommutingTime.push(obj)
+                    })
+                    .catch(err => {
+                        reject(`WTF ${err}`)
+                    })
             }
         }
         resolve(arrCommutingTime)
     })
 }
-module.exports = { coordDistance, inBox ,findPointOfInterest, transitTime, isMoreThanMaxTransitTime};
 
+const isPointOfInterestIsPresent = item => {
+    /*
+        Check if the items has a neighborhood or stations
+    */
 
+    return item['neighborhood'].length != 0 || item['stations'].length != 0
+}
+module.exports = {
+    coordDistance,
+    inBox,
+    findPointOfInterest,
+    transitTime,
+    isMoreThanMaxTransitTime,
+    isPointOfInterestIsPresent
+}

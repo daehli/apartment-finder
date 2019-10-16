@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11.2
+    env_file:
+      - .env.db
+  app:
+    build:
+      context: .
+    ports:
+      - "4000:4000"
+      - "9229:9229"
+    volumes: 
+      - "${PWD}:/usr/src/app"
+    env_file: 
+      - .env.app

@@ -4,6 +4,10 @@
 
 The Goal it's to have a bot that Scrach Kijiji to find all my desired Apartment.
 
+## Prerequis
+
+- **Node** `Versions 8.5.0`
+
 ## Installation 
 
 - **NPM**
