@@ -18,7 +18,7 @@
     "express": "^4.16.2",
     "kijiji-scraper": "^2.1.0",
     "knex": "^0.14.4",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.19",
     "moment": "^2.22.0",
     "mysql": "^2.16.0",
     "nodemon": "^1.18.11",
